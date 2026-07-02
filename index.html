@@ -190,21 +190,24 @@
         }
 
         .qr-placeholder {
-            width: 220px;
-            height: 220px;
-            background: white;
+            width: 240px;
+            height: 240px;
+            background: #0f172a;
             margin: 1.5rem auto;
-            padding: 10px;
-            border-radius: 12px;
+            padding: 8px;
+            border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
+            border: 1px solid #334155;
+            overflow: hidden;
         }
 
         .qr-placeholder img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover;
+            border-radius: 8px;
         }
 
         .qr-instructions {
@@ -395,10 +398,9 @@
             <div class="amount">$10 <span>/ 15 Min</span></div>
             <p style="color: #38bdf8; font-weight: 600; margin-bottom: 1.5rem;">Approx: ₹840 INR</p>
             
-            <!-- QR CODE BOX -->
+            <!-- QR CODE BOX LINKED TO QR.jpeg -->
             <div class="qr-placeholder">
-                <!-- Replace 'qr-code.png' with your real uploaded image filename -->
-                <img src="qr-code.png" alt="Scan to Pay ₹840 via UPI">
+                <img src="QR.jpeg" alt="Scan to Pay ₹840 via UPI">
             </div>
             
             <p class="qr-instructions">
