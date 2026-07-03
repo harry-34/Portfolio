@@ -1,46 +1,6 @@
 const API = "https://portfolio-backend-jl4c.onrender.com/chat";
 
-document.body.insertAdjacentHTML("beforeend", `
-window.addEventListener("load", () => {
 
-    const welcome = "Namaste! Main Harsh ki AI Assistant hoon. Kya main aapka naam jaan sakti hoon?";
-
-    if ('speechSynthesis' in window) {
-
-        speechSynthesis.cancel();
-
-        const speech = new SpeechSynthesisUtterance(welcome);
-
-        speech.lang = "hi-IN";
-        speech.rate = 1;
-        speech.pitch = 1.1;
-
-        speechSynthesis.speak(speech);
-    }
-
-});
-<div id="ai-chat-btn">🤖</div>
-
-<div id="ai-chat-box">
-  <div id="ai-header">
-    AI Assistant
-    <span id="ai-close">✖</span>
-  </div>
-
-  <div id="ai-messages">
-    <div class="ai-msg">
-      🙏 Namaste! Main Harsh ki AI Assistant hoon.<br>
-      Kya main aapka naam jaan sakti hoon?
-    </div>
-  </div>
-
-  <div id="ai-bottom">
-    <input id="ai-input" placeholder="Message..." />
-    <button id="micBtn">🎤</button>
-    <button id="sendBtn">➤</button>
-  </div>
-</div>
-`);
 
 const btn = document.getElementById("ai-chat-btn");
 const box = document.getElementById("ai-chat-box");
