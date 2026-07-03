@@ -1,6 +1,29 @@
 const API = "https://portfolio-backend-jl4c.onrender.com/chat";
 
+document.addEventListener("DOMContentLoaded", () => {
 
+document.body.insertAdjacentHTML("beforeend", `
+<div id="ai-chat-btn">🤖</div>
+
+<div id="ai-chat-box">
+  <div id="ai-header">
+    AI Assistant
+    <span id="ai-close">✖</span>
+  </div>
+
+  <div id="ai-messages">
+    <div class="ai-msg">
+      🙏 Namaste! Main Harsh ki AI Assistant hoon. Kya main aapka naam jaan sakti hoon?
+    </div>
+  </div>
+
+  <div id="ai-bottom">
+    <input id="ai-input" placeholder="Message..." />
+    <button id="micBtn">🎤</button>
+    <button id="sendBtn">➤</button>
+  </div>
+</div>
+`);
 
 const btn = document.getElementById("ai-chat-btn");
 const box = document.getElementById("ai-chat-box");
@@ -17,105 +40,71 @@ closeBtn.onclick = () => {
   box.style.display = "none";
 };
 
-async function sendMessage(){
+async function sendMessage() {
+  const text = input.value.trim();
+  if (!text) return;
 
-    const text=input.value.trim();
+  messages.innerHTML += `<div class="user-msg">${text}</div>`;
+  input.value = "";
+  messages.scrollTop = messages.scrollHeight;
 
-    if(!text) return;
+  try {
+    const res = await fetch(API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: text })
+    });
 
-    messages.innerHTML+=`
-<div class="user-msg">${text}</div>
-`;
+    const data = await res.json();
 
-    input.value="";
+    messages.innerHTML += `<div class="ai-msg">${data.reply}</div>`;
+    messages.scrollTop = messages.scrollHeight;
 
-    messages.scrollTop=messages.scrollHeight;
+    // VOICE
+    if ("speechSynthesis" in window) {
+      speechSynthesis.cancel();
 
-    try{
+      const speech = new SpeechSynthesisUtterance(data.reply);
 
-        const res=await fetch(API,{
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body:JSON.stringify({
-                message:text
-            })
-        });
+      speech.lang = "hi-IN";
+      speech.rate = 0.95;
+      speech.pitch = 1.05;
 
-        const data=await res.json();
+      const voices = speechSynthesis.getVoices();
+      const preferred =
+        voices.find(v => v.name.includes("Google हिन्दी")) ||
+        voices.find(v => v.lang.includes("hi"));
 
-        messages.innerHTML+=`
-<div class="ai-msg">${data.reply}</div>
-`;
+      if (preferred) speech.voice = preferred;
 
-        messages.scrollTop=messages.scrollHeight;
-
-        if('speechSynthesis' in window){
-
-            speechSynthesis.cancel();
-
-            const speech=new SpeechSynthesisUtterance(data.reply);
-
-            speech.lang="hi-IN";
-
-          const voices = speechSynthesis.getVoices();
-
-const preferred =
-    voices.find(v => v.name.includes("Microsoft Heera")) ||
-    voices.find(v => v.name.includes("Google हिन्दी")) ||
-    voices.find(v => v.name.includes("Google Hindi")) ||
-    voices.find(v => v.lang === "hi-IN") ||
-    voices.find(v => v.lang.startsWith("hi"));
-
-if (preferred) {
-    speech.voice = preferred;
-}
-
-speech.lang = "hi-IN";
-speech.rate = 0.95;
-speech.pitch = 1.05;
-
-            speechSynthesis.speak(speech);
-
-        }
-
-    }catch(e){
-
-        messages.innerHTML+=`
-<div class="ai-msg">❌ Server Error</div>
-`;
-
+      speechSynthesis.speak(speech);
     }
 
+  } catch (e) {
+    messages.innerHTML += `<div class="ai-msg">❌ Server Error</div>`;
+  }
 }
 
-sendBtn.onclick=sendMessage;
+sendBtn.onclick = sendMessage;
 
-input.addEventListener("keypress",(e)=>{
-
-if(e.key==="Enter") sendMessage();
-
+input.addEventListener("keypress", (e) => {
+  if (e.key === "Enter") sendMessage();
 });
 
-const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+// MIC
+const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-if(SR){
+if (SR) {
+  const recognition = new SR();
+  recognition.lang = "hi-IN";
 
-const recognition=new SR();
+  const micBtn = document.getElementById("micBtn");
 
-recognition.lang="hi-IN";
+  micBtn.onclick = () => recognition.start();
 
-micBtn.onclick=()=>{
-
-recognition.start();
-
-};
-
-recognition.onresult=(e)=>{
-
-input.value=e.results[0][0].transcript;
-
-};
-
+  recognition.onresult = (e) => {
+    input.value = e.results[0][0].transcript;
+  };
 }
+
+});
