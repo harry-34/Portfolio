@@ -99,18 +99,22 @@ async function sendMessage(){
 
             speech.lang="hi-IN";
 
-            const voices=speechSynthesis.getVoices();
+          const voices = speechSynthesis.getVoices();
 
-            const female=voices.find(v=>
-                v.lang.includes("hi") &&
-                v.name.toLowerCase().includes("female")
-            );
+const preferred =
+    voices.find(v => v.name.includes("Microsoft Heera")) ||
+    voices.find(v => v.name.includes("Google हिन्दी")) ||
+    voices.find(v => v.name.includes("Google Hindi")) ||
+    voices.find(v => v.lang === "hi-IN") ||
+    voices.find(v => v.lang.startsWith("hi"));
 
-            if(female) speech.voice=female;
+if (preferred) {
+    speech.voice = preferred;
+}
 
-            speech.rate=1;
-
-            speech.pitch=1.1;
+speech.lang = "hi-IN";
+speech.rate = 0.95;
+speech.pitch = 1.05;
 
             speechSynthesis.speak(speech);
 
