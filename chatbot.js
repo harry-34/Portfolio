@@ -13,7 +13,15 @@ document.body.insertAdjacentHTML("beforeend", `
 
   <div id="ai-messages">
     <div class="ai-msg">
-      🙏 Namaste! Main Harsh ki AI Assistant hoon. Kya main aapka naam jaan sakti hoon?
+    Namastey! I'm Harsh Panchal's AI Assistant.
+
+I can help you with:
+• 💻 Website Development
+• 🤖 AI Chatbots
+• 📱 Portfolio Websites
+• 📅 Book a Meeting
+
+How can I help you today?
     </div>
   </div>
 
