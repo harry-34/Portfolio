@@ -421,3 +421,104 @@ childList:true,
 subtree:true
 
 });
+// ===== Welcome Voice =====
+
+window.addEventListener("load",()=>{
+
+setTimeout(()=>{
+
+if("speechSynthesis" in window){
+
+speechSynthesis.cancel();
+
+const welcome=new SpeechSynthesisUtterance(
+
+"Hello! I'm Harsh AI. How can I help you today?"
+
+);
+
+const voices=speechSynthesis.getVoices();
+
+const preferred=
+
+voices.find(v=>v.name.includes("Microsoft Heera"))||
+
+voices.find(v=>v.name.includes("Google हिन्दी"))||
+
+voices.find(v=>v.name.includes("Google Hindi"))||
+
+voices.find(v=>v.lang==="hi-IN")||
+
+voices.find(v=>v.lang.startsWith("hi"))||
+
+voices.find(v=>v.lang.startsWith("en"));
+
+if(preferred){
+
+welcome.voice=preferred;
+
+welcome.lang=preferred.lang;
+
+}else{
+
+welcome.lang="hi-IN";
+
+}
+
+welcome.rate=.95;
+welcome.pitch=1.05;
+welcome.volume=1;
+
+speechSynthesis.speak(welcome);
+
+}
+
+},600);
+
+});
+
+// ===== Floating Button Pulse =====
+
+const pulse=document.querySelector(".pulse");
+
+if(pulse){
+
+setInterval(()=>{
+
+pulse.classList.toggle("active");
+
+},1500);
+
+}
+
+// ===== Preload Voices =====
+
+if("speechSynthesis" in window){
+
+speechSynthesis.onvoiceschanged=()=>{
+
+speechSynthesis.getVoices();
+
+};
+
+}
+
+// ===== Open Chat Automatically Once =====
+
+setTimeout(()=>{
+
+if(!localStorage.getItem("harsh_ai_opened")){
+
+box.style.display="flex";
+
+input.focus();
+
+localStorage.setItem("harsh_ai_opened","true");
+
+}
+
+},1200);
+
+// ===== END =====
+
+});
