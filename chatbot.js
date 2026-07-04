@@ -306,3 +306,118 @@ content:reply
 
 addAIMessage(reply);
 }
+// ===== Voice Reply =====
+
+if ("speechSynthesis" in window) {
+
+speechSynthesis.cancel();
+
+const speech = new SpeechSynthesisUtterance(reply);
+
+const voices = speechSynthesis.getVoices();
+
+const preferred =
+voices.find(v => v.name.includes("Microsoft Heera")) ||
+voices.find(v => v.name.includes("Google हिन्दी")) ||
+voices.find(v => v.name.includes("Google Hindi")) ||
+voices.find(v => v.lang === "hi-IN") ||
+voices.find(v => v.lang.startsWith("hi")) ||
+voices.find(v => v.lang.startsWith("en"));
+
+if (preferred) speech.voice = preferred;
+
+speech.lang = preferred?.lang || "hi-IN";
+
+speech.rate = 0.95;
+speech.pitch = 1.05;
+speech.volume = 1;
+
+speechSynthesis.speak(speech);
+
+}
+
+}catch(error){
+
+removeTyping();
+
+console.error(error);
+
+addAIMessage(
+"⚠️ Sorry, I'm unable to connect right now. Please try again in a few seconds."
+);
+
+}
+
+}
+
+// ===== Send Button =====
+
+sendBtn.addEventListener("click",sendMessage);
+
+// ===== Enter Key =====
+
+input.addEventListener("keydown",(e)=>{
+
+if(e.key==="Enter"){
+
+e.preventDefault();
+
+sendMessage();
+
+}
+
+});
+
+// ===== Voice Input =====
+
+const SpeechRecognition =
+window.SpeechRecognition ||
+window.webkitSpeechRecognition;
+
+if(SpeechRecognition){
+
+const recognition = new SpeechRecognition();
+
+recognition.lang="hi-IN";
+
+recognition.interimResults=false;
+
+recognition.maxAlternatives=1;
+
+document.getElementById("micBtn").onclick=()=>{
+
+recognition.start();
+
+};
+
+recognition.onresult=(event)=>{
+
+input.value=event.results[0][0].transcript;
+
+sendMessage();
+
+};
+
+recognition.onerror=()=>{
+
+addAIMessage("🎤 Voice recognition isn't available on this device.");
+
+};
+
+}
+
+// ===== Auto Scroll =====
+
+const observer=new MutationObserver(()=>{
+
+messages.scrollTop=messages.scrollHeight;
+
+});
+
+observer.observe(messages,{
+
+childList:true,
+
+subtree:true
+
+});
