@@ -162,5 +162,147 @@ hour:"2-digit",
 minute:"2-digit"
 
 });
+function addUserMessage(text){
 
+const div=document.createElement("div");
+
+div.className="user-msg";
+
+div.innerHTML=`
+
+<div class="msg-text">${text}</div>
+
+<div class="msg-time">${getTime()}</div>
+
+`;
+
+messages.appendChild(div);
+
+messages.scrollTop=messages.scrollHeight;
+
+}
+
+function addAIMessage(text){
+
+const div=document.createElement("div");
+
+div.className="ai-msg";
+
+div.innerHTML=`
+
+<div class="msg-text">${text}</div>
+
+<div class="msg-time">${getTime()}</div>
+
+`;
+
+messages.appendChild(div);
+
+messages.scrollTop=messages.scrollHeight;
+
+}
+
+function showTyping(){
+
+const typing=document.createElement("div");
+
+typing.className="ai-msg";
+
+typing.id="typing";
+
+typing.innerHTML=`
+
+<div class="typing">
+
+<span></span>
+
+<span></span>
+
+<span></span>
+
+</div>
+
+`;
+
+messages.appendChild(typing);
+
+messages.scrollTop=messages.scrollHeight;
+
+}
+
+function removeTyping(){
+
+document.getElementById("typing")?.remove();
+
+}
+
+async function sendMessage(){
+
+const text=input.value.trim();
+
+if(!text)return;
+
+addUserMessage(text);
+
+conversation.push({
+
+role:"user",
+
+content:text
+
+});
+
+input.value="";
+
+showTyping();
+
+try{
+
+const res=await fetch(API,{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":"application/json"
+
+},
+
+body:JSON.stringify({
+
+message:text,
+
+history:conversation
+
+})
+
+});
+
+const data=await res.json();
+
+removeTyping();
+
+const reply=
+
+data?.reply ||
+
+data?.output_text ||
+
+data?.response ||
+
+data?.message ||
+
+(data?.output?.[0]?.content?.[0]?.text) ||
+
+"Sorry, I couldn't generate a response.";
+
+conversation.push({
+
+role:"assistant",
+
+content:reply
+
+});
+
+addAIMessage(reply);
 }
